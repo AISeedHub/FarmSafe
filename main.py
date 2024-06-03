@@ -9,6 +9,8 @@ import yaml
 
 from db.get_data import *
 from render_HTTP import generate_html
+import schedule
+import time
 
 
 def get_customer_emails():
@@ -59,7 +61,15 @@ def send_email(content):
     print('Email sent successfully at ', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
-list_farm = get_all_farms()
-for farm in list_farm:
-    email_content = report_make_up(farm['farm_id'], farm['farm_name'])
-    send_email(email_content.replace('\n', ''))
+def send_daily_report():
+    list_farm = get_all_farms()
+    for farm in list_farm:
+        email_content = report_make_up(farm['farm_id'], farm['farm_name'])
+        send_email(email_content.replace('\n', ''))
+
+# Schedule the job to run every day at 7:00 AM
+schedule.every().day.at("07:00").do(send_daily_report)
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)
