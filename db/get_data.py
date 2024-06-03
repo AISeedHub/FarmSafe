@@ -6,3 +6,9 @@ def get_all_users():
     client = pymongo.MongoClient(mongo_uri)
     db = client["FarmManagement"]
     collection = db["Users"]
+    data = collection.find()
+    return data
+
+
+if __name__ == "__main__":
+    data = get_all_users()
