@@ -1,13 +1,37 @@
+import pymongo
+
+mongo_uri = "mongodb://localhost:37017/"
+
+
 # read User's information from Mongo database
 def get_all_users():
-    import pymongo
-
-    mongo_uri = "mongodb://localhost:27017/"
     client = pymongo.MongoClient(mongo_uri)
     db = client["FarmManagement"]
-    collection = db["Users"]
+    collection = db["User"]
     data = collection.find()
     return data
+
+
+# get all Farms information from Mongo database
+def get_all_farms():
+    client = pymongo.MongoClient(mongo_uri)
+    db = client["FarmManagement"]
+    collection = db["Farms"]
+    data = collection.find()
+    return data
+
+
+def get_latest_sensor_data(farm_id):
+    client = pymongo.MongoClient(mongo_uri)
+    db = client[str(farm_id)]
+    # get all collections (sensor devices)
+    collections = db.list_collection_names()
+    # for each collection, get the latest data
+    sensor_data = {
+        collection: db[collection].find({}, {'_id': 0}).sort('Datetime', -1).limit(1)
+        for collection in collections
+    }
+    return sensor_data
 
 
 if __name__ == "__main__":

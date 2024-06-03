@@ -6,7 +6,32 @@ from email.message import EmailMessage
 import smtplib
 import os
 
-to = ['blackhole.large@gmail.com', 'sayney1004@gmail.com']
+from db.get_data import *
+from render_HTTP import generate_html
+
+
+def get_customer_emails():
+    data = get_all_users()
+    emails = [d['email'] for d in data]
+    return emails
+
+
+def report_make_up(farm_id, farm_name):
+    device_data = get_latest_sensor_data(farm_id)
+    camera_data = None
+    sensor_data = {}
+    """
+    device_data = {
+        'device1': cursor1,
+        'device2': cursor2,
+        ...
+    }
+    """
+    for device in device_data:
+        sensor_data[device] = device_data[device].next()  # get the first element of the cursor
+
+    return generate_html(farm_name, sensor_data, camera_data)
+
 
 # smtp = smtplib.SMTP('smtp.gmail.com', 587)
 # smtp.ehlo()
@@ -20,57 +45,26 @@ to = ['blackhole.large@gmail.com', 'sayney1004@gmail.com']
 #
 
 msg = EmailMessage()
-msg['Subject'] = 'Beautiful Subject'
+msg['Subject'] = 'Smart Farming Report'
 msg['From'] = 'aiseed.dev@gmail.com'
-msg['To'] = to
+msg['To'] = get_customer_emails()
 
-# attach pictures and multiple attachments
-img_data = open('image.jpg', 'rb').read()
-msg.attach(MIMEImage(img_data, name=os.path.basename('image.jpg')))
 
-msg.set_content('''
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <link rel="stylesheet" type="text/css" hs-webfonts="true" href="https://fonts.googleapis.com/css?family=Lato|Lato:i,b,bi">
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style type="text/css">
-          h1{font-size:56px}
-          h2{font-size:28px;font-weight:900}
-          p{font-weight:100}
-          td{vertical-align:top}
-          #email{margin:auto;width:600px;background-color:#fff}
-        </style>
-    </head>
-    <body bgcolor="#F5F8FA" style="width: 100%; font-family:Lato, sans-serif; font-size:18px;">
-    <div id="email">
-        <table role="presentation" width="100%">
-            <tr>
-                <td bgcolor="#00A4BD" align="center" style="color: white;">
-                    <h1> AISEED Weekly report!</h1>
-                </td>
-        </table>
-        <table role="presentation" border="0" cellpadding="0" cellspacing="10px" style="padding: 30px 30px 30px 60px;">
-            <tr>
-                <td>
-                    <h2>Custom stylized email</h2>
-                    <p>
-                        You can add HTML/CSS code here to stylize your emails.
-                    </p>
-                </td>
-            </tr>
-        </table>
-    </div>
-    </body>
-    </html>
-''', subtype='html')
+# # attach pictures and multiple attachments
+# img_data = open('image.jpg', 'rb').read()
+# msg.attach(MIMEImage(img_data, name=os.path.basename('image.jpg')))
 
-with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-    smtp.login('aiseed.dev@gmail.com', '')
-    smtp.send_message(msg)
+def send_email(email_content):
+    msg.set_content(email_content, subtype='html')
 
-# smtp.sendmail(from_addr="aiseed.dev@gmail.com", to_addrs=to, msg=msg.as_string())
-# smtp.quit()
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        smtp.login('aiseed.dev@gmail.com', 'ukyt ghoc yvvu nbpv')
+        smtp.send_message(msg)
 
-print('Email sent successfully')
+    print('Email sent successfully')
+
+
+list_farm = get_all_farms()
+for farm in list_farm:
+    email_content = report_make_up(farm['farm_id'], farm['farm_name'])
+    send_email(email_content.replace('\n', ''))
