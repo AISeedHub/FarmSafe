@@ -4,7 +4,7 @@ from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.message import EmailMessage
 import smtplib
-import datetime
+from datetime import datetime
 import yaml
 
 from db.get_data import *

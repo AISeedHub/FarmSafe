@@ -1,6 +1,10 @@
 import pymongo
+import yaml
 
-mongo_uri = "mongodb://localhost:37017/"
+# read the configuration file
+with open('config.yaml', 'r') as file:
+    config = yaml.safe_load(file)
+    mongo_uri = config['mongo_uri']
 
 
 # read User's information from Mongo database
