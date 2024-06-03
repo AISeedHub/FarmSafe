@@ -4,15 +4,16 @@ from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.message import EmailMessage
 import smtplib
-import os
+import datetime
+import yaml
 
 from db.get_data import *
 from render_HTTP import generate_html
 
 
 def get_customer_emails():
-    data = get_all_users()
-    emails = [d['email'] for d in data]
+    user = get_all_users()
+    emails = [d['email'] for d in user]
     return emails
 
 
@@ -33,20 +34,14 @@ def report_make_up(farm_id, farm_name):
     return generate_html(farm_name, sensor_data, camera_data)
 
 
-# smtp = smtplib.SMTP('smtp.gmail.com', 587)
-# smtp.ehlo()
-# smtp.starttls()
-# smtp.login('aiseed.dev@gmail.com', password='')
-# # ukyt ghoc yvvu nbpv
-#
-# msg = MIMEMultipart()
-# msg['Subject'] = 'Hello'
-# msg.attach(MIMEText('Hello, this is a test email from AISEED', 'plain'))
-#
-
+# read the email and password from a file config.yaml
+with open('config.yaml', 'r') as file:
+    config = yaml.safe_load(file)
+    email = config['email']
+    password = config['password']
 msg = EmailMessage()
 msg['Subject'] = 'Smart Farming Report'
-msg['From'] = 'aiseed.dev@gmail.com'
+msg['From'] = email
 msg['To'] = get_customer_emails()
 
 
@@ -54,14 +49,14 @@ msg['To'] = get_customer_emails()
 # img_data = open('image.jpg', 'rb').read()
 # msg.attach(MIMEImage(img_data, name=os.path.basename('image.jpg')))
 
-def send_email(email_content):
-    msg.set_content(email_content, subtype='html')
+def send_email(content):
+    msg.set_content(content, subtype='html')
 
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-        smtp.login('aiseed.dev@gmail.com', 'ukyt ghoc yvvu nbpv')
+        smtp.login(email, password)
         smtp.send_message(msg)
 
-    print('Email sent successfully')
+    print('Email sent successfully at ', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
 list_farm = get_all_farms()
