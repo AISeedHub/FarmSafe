@@ -12,3 +12,5 @@ def get_all_users():
 
 if __name__ == "__main__":
     data = get_all_users()
+    for d in data:
+        print(d)
