@@ -8,7 +8,7 @@ from datetime import datetime
 import yaml
 
 from db.get_data import *
-from render_HTTP import generate_html
+from render_HTML import generate_html
 import schedule
 import time
 
@@ -67,9 +67,10 @@ def send_daily_report():
         email_content = report_make_up(farm['farm_id'], farm['farm_name'])
         send_email(email_content.replace('\n', ''))
 
+
 # Schedule the job to run every day at 7:00 AM
 schedule.every().day.at("07:00").do(send_daily_report)
-
+# send_daily_report()
 while True:
     schedule.run_pending()
     time.sleep(1)

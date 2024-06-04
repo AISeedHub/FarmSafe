@@ -56,7 +56,7 @@ def generate_html(farm_name, sensor_data, camera_data):
     # generate tables for each device (1 table per device)
     for device_name in sensor_data:
         table_str = f"""
-                <h3>Device: {device_name}</h3>
+             <li><h3 style="font-size: 17px;">Device: {device_name}</h3></li>
                 <table class="report-table">
                     <thead>
                         <tr>
@@ -89,8 +89,10 @@ def generate_html(farm_name, sensor_data, camera_data):
                     <div class="content">
                         <h2>Smartfarm Name: {farm_name}</h2>
                         <p>Number of devices: {num_devices}</p>
-                        <h2>Sensor Data:</h2>
+                        <h3>Sensors Data:</h3>
+                        <ol>
                         {"".join(html_table)}
+                        </ol>
                     </div>
                 </div>
             </body>
