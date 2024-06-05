@@ -34,3 +34,13 @@ def send_daily_report(email_service):
         email_service.send_email(content=email_content.replace('\n', ''),
                                  subject='AISeed Daily Report',
                                  to=get_user_emails())
+
+
+# Send alert email to admin when device is offline: Camera is down or sensor device is not sending data
+def send_alert_email(email_service):
+    admin_email = get_admin_email()
+    # check if the camera is down
+    # check if the sensor device is not sending data
+    email_service.send_email(content='Camera is down or sensor device is not sending data',
+                             subject='Alert: Device is offline',
+                             to=admin_email)
