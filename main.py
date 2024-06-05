@@ -8,7 +8,7 @@ from datetime import datetime
 import yaml
 
 from db.get_data import *
-from render_HTML import generate_html
+from render_HTML import generate_report
 import schedule
 import time
 
@@ -33,7 +33,7 @@ def report_make_up(farm_id, farm_name):
     for device in device_data:
         sensor_data[device] = device_data[device].next()  # get the first element of the cursor
 
-    return generate_html(farm_name, sensor_data, camera_data)
+    return generate_report(farm_name, sensor_data, camera_data)
 
 
 # read the email and password from a file config.yaml
