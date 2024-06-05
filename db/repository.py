@@ -16,6 +16,14 @@ def get_all_users():
     return data
 
 
+def get_admin_email():  # not tested
+    client = pymongo.MongoClient(mongo_uri)
+    db = client["FarmManagement"]
+    collection = db["User"]
+    data = collection.find_one({"role": "admin"})
+    return data['email']
+
+
 # get all Farms information from Mongo database
 def get_all_farms():
     client = pymongo.MongoClient(mongo_uri)
