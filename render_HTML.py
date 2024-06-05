@@ -1,7 +1,7 @@
 #  Copyright (c) 2024. @Aiseed
 #  Author: Andrew Lee
 
-def generate_html(farm_name, sensor_data, camera_data):
+def generate_report(farm_name, sensor_data, camera_data):
     html_header_str = """
             <head>
                 <meta charset="UTF-8">
