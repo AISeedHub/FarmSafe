@@ -1,12 +1,56 @@
 #  Copyright (c) 2024. @Aiseed
 #  Author: Andrew Lee
 
-def generate_report(farm_name, sensor_data, camera_data):
+from datetime import datetime
+
+
+def generate_latest_device_report(device_data, device_title="Sensord Device"):
+    num_devices = len(device_data)
+    html_table = []
+    # generate tables for each device (1 table per device)
+    for device_name in device_data:
+        table_str = f"""
+                 <li><h3 style="font-size: 17px;">Device: {device_name}</h3></li>
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                    """
+        # if device_name has "Datetime" key, change this name to be "LastResponse"
+        if "Datetime" in device_data.get(device_name):
+            device_data.get(device_name)["LastResponse"] = device_data.get(device_name).pop("Datetime")
+        # Generate table headers
+        for key in device_data.get(device_name):
+            table_str += f"<th>{key}</th>"
+        table_str += "</tr>"
+        table_str += "</thead>"
+        table_str += "<tbody>"
+        table_str += "<tr>"
+        # Generate table rows
+        for key in device_data.get(device_name):
+            if key == "LastResponse":
+                table_str += f"<td>{device_data.get(device_name)[key].strftime("%Y-%m-%d %H:%M:%S")}</td>"
+            else:
+                table_str += f"<td>{str(device_data.get(device_name)[key])}</td>"
+        table_str += "</tr>"
+        table_str += "</tbody>"
+        table_str += "</table>"
+        html_table.append(table_str)
+    html_block = f"""
+                    <h3>{device_title}:</h3>
+                    <p>Number of devices: {num_devices}</p>
+                    <ol>
+                    {"".join(html_table)}
+                    </ol>
+                    """
+    return html_block
+
+
+def generate_report(farm_name, sensor_data, edge_data, title="AISeed Report"):
     html_header_str = """
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Smartfarm Daily Report</title>
+                <title>{title}</title>
                 <style>
                     body {
                         background-color: #F5F8FA;
@@ -51,59 +95,35 @@ def generate_report(farm_name, sensor_data, camera_data):
             </head>
         """
 
-    num_devices = len(sensor_data)
-    html_table = []
-    # generate tables for each device (1 table per device)
-    for device_name in sensor_data:
-        table_str = f"""
-             <li><h3 style="font-size: 17px;">Device: {device_name}</h3></li>
-                <table class="report-table">
-                    <thead>
-                        <tr>
-                """
-        # Generate table headers
-        for key in sensor_data.get(device_name):
-            table_str += f"<th>{key}</th>"
-        table_str += "</tr>"
-        table_str += "</thead>"
-        table_str += "<tbody>"
-        table_str += "<tr>"
-        # Generate table rows
-        for key in sensor_data.get(device_name):
-            if key == "Datetime":
-                table_str += f"<td>{sensor_data.get(device_name)[key].strftime("%Y-%m-%d %H:%M:%S")}</td>"
-            else:
-                table_str += f"<td>{str(sensor_data.get(device_name)[key])}</td>"
-        table_str += "</tr>"
-        table_str += "</tbody>"
-        table_str += "</table>"
-        html_table.append(table_str)
+    # generate sensor device report
+    sensor_device_block = generate_latest_device_report(sensor_data, device_title="Sensor Device")
+    # generate edge device report
+    edge_device_block = generate_latest_device_report(edge_data, device_title="Edge Device")
 
     # generate html body
     html_body_str = f"""
             <body>
                 <div id="email">
                     <div class="header">
-                        <h1>AISeed Daily Report</h1>
+                        <h1>{title}</h1>
                     </div>
                     <div class="content">
-                        <h2>Smartfarm Name: {farm_name}</h2>
-                        <p>Number of devices: {num_devices}</p>
-                        <h3>Sensors Data:</h3>
-                        <ol>
-                        {"".join(html_table)}
-                        </ol>
+                        <h2>Smart Farm Name: {farm_name}</h2>
+                        <p> <i> Report generated at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}  </i> </p>
+                        {"".join(sensor_device_block)}
+                        <br>
+                        {"".join(edge_device_block)}
                     </div>
                 </div>
             </body>
         """
 
     html_string = f"""
-        <!DOCTYPE html>
-        <html lang="en">
-            {html_header_str}
-            {html_body_str}
-        </html>
-    """
+            <!DOCTYPE html>
+            <html lang="en">
+                {html_header_str.replace("{title}", title)}
+                {html_body_str}
+            </html>
+        """
 
     return html_string
