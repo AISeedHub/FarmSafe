@@ -1,3 +1,3 @@
 #!/bin/bash
 python regular_report.py
-python offine_report.py
+python offline_report.py
