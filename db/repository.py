@@ -16,12 +16,6 @@ def get_all_users():
     return data
 
 
-def get_admin_email():  # not tested
-    client = pymongo.MongoClient(mongo_uri)
-    db = client["FarmManagement"]
-    collection = db["User"]
-    data = collection.find_one({"role": "admin"})
-    return data['email']
 
 
 # get all Farms information from Mongo database
@@ -71,7 +65,8 @@ def get_latest_edge_data(farm_id):
     for camera_edge in camera_state:
         # only get IPO and LastResponse
         edge_device_data[camera_edge.get('Name')] = {'IP': camera_edge.get('IP'),
-                                                     'LastResponse': camera_edge.get('LastResponse')}
+                                                     'LastResponse': camera_edge.get('LastResponse'),
+                                                     'Datetime': edge_data.get('Datetime')}
 
     return edge_device_data
     # edge_data -> get name: Edge_1 -> [key]:  IP | LastResponse
