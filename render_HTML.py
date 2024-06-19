@@ -16,7 +16,7 @@ def generate_latest_device_report(device_data, device_title="Sensord Device"):
                             <tr>
                     """
         # if device_name has "Datetime" key, change this name to be "LastResponse"
-        if "Datetime" in device_data.get(device_name):
+        if "Sensor Device" in device_title and "Datetime" in device_data.get(device_name):
             device_data.get(device_name)["LastResponse"] = device_data.get(device_name).pop("Datetime")
         # Generate table headers
         for key in device_data.get(device_name):
