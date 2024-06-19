@@ -18,7 +18,7 @@ pip install -r requirement.txt
 ### 2. Run the application as a background process
 
 ```
-nohup ./run.sh > email.log >2&1
+sh run.sh 
 ```
 
 ## Development
