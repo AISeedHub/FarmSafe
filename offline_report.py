@@ -7,6 +7,8 @@ from tasks import *
 
 from email_service import EmailService
 
+CHECKING_INTERVAL = 60 * 30  # every 30 minutes check the status of the sensor devices and cameras
+
 import schedule
 
 email_service = EmailService()
@@ -18,5 +20,7 @@ email_service = EmailService()
 #     schedule.run_pending()
 #     time.sleep(1)
 while True:
+    print(datetime.now())
     send_alert_email(email_service)
-    time.sleep(60)
+    print('-' * 50)
+    time.sleep(CHECKING_INTERVAL)
