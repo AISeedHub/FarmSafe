@@ -5,8 +5,8 @@ from render_HTML import *
 
 TIME_INTERVAL = 60 * 30  # How long the device is considered offline
 # Schedule the camera to work only in the day time
-START_TIME = 7 # 7 AM in the morning
-END_TIME = 19 # 7 PM in the evening
+START_TIME = 7  # 7 AM in the morning
+END_TIME = 19  # 7 PM in the evening
 
 
 def get_user_emails():
@@ -14,12 +14,14 @@ def get_user_emails():
     emails = [d['email'] for d in user]
     return emails
 
+
 def get_admin_email():
     user = get_all_users()
     for u in user:
         if u['role'] == 'admin':
             return u['email']
     return None
+
 
 def report_make_up(farm_id, farm_name):
     sensor_device_data = get_latest_sensor_data(farm_id)
@@ -50,10 +52,13 @@ def check_sensor_status(farm_id):
         # if the gap of time between last response and current time is more than 1 hour, device is considered offline
         print(f"-check_sensor_status at {farm_id} waiting: ", (current_time - last_response).seconds // 60, " minutes")
         if (current_time - last_response).seconds > TIME_INTERVAL:
-            print("!!Device offline: ", device_name, " from farm: ", farm_id, " last response: ", last_response, " current time: ", current_time)
+            print("!!Device offline: ", device_name, " from farm: ", farm_id, " last response: ", last_response,
+                  " current time: ", current_time)
             print("Time difference: ", (current_time - last_response).seconds)
             # convert datetime to string
-            offline_devices.append({device_name: last_response.strftime("%Y-%m-%d %H:%M:%S")})
+            offline_devices.append({"Name: ": device_name,
+                                    "Farm": farm_id,
+                                    "LastResponse": last_response.strftime("%Y-%m-%d %H:%M:%S")})
     return offline_devices
 
 
@@ -72,8 +77,13 @@ def check_camera_status(farm_id):
         print(f"-check_camera_status at {farm_id} waiting: ", (current_time - last_response).seconds // 60, " minutes")
         # if the gap of time between last response and current time is more than 1 hour, camera is considered offline
         if (current_time - last_response).seconds > TIME_INTERVAL:
-            print("!!Camera offline: ", camera_name, " from farm: ", farm_id, " last response: ", last_response, " current time: ", current_time)
-            offline_cameras.append({camera_name: last_response.strftime("%Y-%m-%d %H:%M:%S")})
+            print("!!Camera offline: ", camera_name, " from farm: ", farm_id, " last response: ", last_response,
+                  " current time: ", current_time)
+            offline_cameras.append({"Name: ": camera_name,
+                                    "Farm": farm_id,
+                                    "IP": edge_device_data.get(camera_name).get('IP'),
+                                    "LastResponse": last_response.strftime("%Y-%m-%d %H:%M:%S"),
+                                    })
     return offline_cameras
 
 
