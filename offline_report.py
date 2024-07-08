@@ -7,7 +7,7 @@ from tasks import *
 
 from email_service import EmailService
 
-CHECKING_INTERVAL = 60 * 30  # every 30 minutes check the status of the sensor devices and cameras
+CHECKING_INTERVAL = 60 * 60  # every 30 minutes check the status of the sensor devices and cameras
 
 import schedule
 
