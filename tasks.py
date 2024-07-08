@@ -16,11 +16,12 @@ def get_user_emails():
 
 
 def get_admin_email():
+    emails = []
     user = get_all_users()
     for u in user:
         if u['role'] == 'admin':
-            return u['email']
-    return None
+            emails.append(u['email'])
+    return emails
 
 
 def report_make_up(farm_id, farm_name):
