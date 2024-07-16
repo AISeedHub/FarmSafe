@@ -15,6 +15,15 @@ def get_user_emails():
     return emails
 
 
+def get_developer_email():
+    emails = []
+    user = get_all_users()
+    for u in user:
+        if u['role'] == 'developer':
+            emails.append(u['email'])
+    return emails
+
+
 def get_admin_email():
     emails = []
     user = get_all_users()
