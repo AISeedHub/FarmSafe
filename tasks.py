@@ -58,10 +58,21 @@ def check_sensor_status(farm_id):
     current_time = datetime.now()
 
     for device_name in sensor_device_data:
+        num_sensors_non = 0
+        for key in sensor_device_data.get(device_name):
+            if sensor_device_data.get(device_name).get(key) is None:
+                num_sensors_non += 1
+        # if > 50% sensors response with None or Null, the farm is considered offline
+        if num_sensors_non > len(sensor_device_data) // 2:
+            offline_devices.append({"Name: ": device_name,
+                                    "Farm": farm_id,
+                                    "Reasons": "More than 50% sensors are not working"})
+
+    for device_name in sensor_device_data:
         last_response = sensor_device_data.get(device_name).get('Datetime')
         # if the gap of time between last response and current time is more than 1 hour, device is considered offline
         print(f"-check_sensor_status at {farm_id} waiting: ", (current_time - last_response).seconds // 60, " minutes")
-        if (current_time - last_response).seconds > TIME_INTERVAL:
+        if (current_time - last_response).seconds > TIME_INTERVAL :
             print("!!Device offline: ", device_name, " from farm: ", farm_id, " last response: ", last_response,
                   " current time: ", current_time)
             print("Time difference: ", (current_time - last_response).seconds)
