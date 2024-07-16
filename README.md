@@ -7,6 +7,10 @@ This repo is for a Smartfarm Alert System
 2. 🛎️ Send alert email to admin when the sensor data exceeds the threshold (later)
 3. 🚨 Send alert email to admin when device is offline: Camera is down or sensor device is not sending data
 
+### 📅 Template for the regular report
+
+![template_email.png](img/template_email.png)
+
 ## Installation
 
 ### 1. Install the dependencies
